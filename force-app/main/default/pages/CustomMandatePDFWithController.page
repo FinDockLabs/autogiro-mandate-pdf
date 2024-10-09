@@ -1,0 +1,316 @@
+<apex:page controller="CustomPDFController" renderAs="PDF" applyBodyTag="false" applyHtmlTag="false" showHeader="false" sidebar="false">
+    <html>
+    <head>
+    <style>
+        html {
+            width: 100%;
+        }
+
+        body {
+            width: 94%;
+            padding: 0 1cm;
+            font-size: 9pt;
+            font-family: Arial, sans-serif;
+        }
+
+        .page {
+            height: 230mm;
+            padding: 1cm 0;
+        }
+
+        .left {
+            float: left;
+            width: 44%;
+            margin-right: 5%
+        }
+
+        .right {
+            float: left;
+            width: 44%;
+        }
+
+        .clearfix {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        header {
+        }
+
+        header img {
+            width: 5cm;
+            float: left;
+        }
+
+        header h1 {
+            font-size: 13pt;
+            color: #000;
+            float: right;
+            margin-right: 0.25cm;
+        }
+
+        h1 {
+            font-size: 10pt;
+            color: #000;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 12pt;
+        }
+
+        section {
+            margin-bottom: 1cm;
+        }
+
+        section.text {
+            display: block;
+        }
+
+        section div {
+            flex-grow: 1;
+            flex-basis: 40%;
+        }
+
+        div .field {
+            display: block;
+            border: 1px solid #000;
+            border-top: none;
+            border-collapse: collapse;
+            height: 38px;
+            padding: 5px;
+        }
+
+        div .field:first-of-type {
+            border-top: 1px solid #000;
+        }
+
+        .field small {
+            display: block;
+            margin: 5px;
+            margin-left: 0px;
+        }
+
+        .field.signature {
+            height: 2.5cm;
+        }
+
+        .example {
+            width: 100%;
+            padding: 20px;
+            border: 2px #333 dashed;
+            background: #DDD;
+            color: #333;
+        }
+    </style>
+    </head>
+    <body>
+        <div class="page">
+            <header>
+                <apex:image id="bankgirot-logo" value="{!$Resource.NPFF__BankgirotLogo}" alt="Bankgirot"/>
+                <h1>Autogiroanmälan,<br />
+                    medgivande till kontonummer</h1>
+            </header>
+            <div class="clearfix"></div>
+        <section>
+        <div class="left">
+            <h1>Betalningsmottagare</h1>
+            <div class="field">
+                <small>Namn*</small>
+                {!payeeName}
+            </div>
+            <div class="field">
+                <small>Fullständig adress*</small>
+                {!payeeStreet}
+            </div>
+            <div class="field">
+                {!payeePostalCode}
+            </div>
+            <div class="field">
+                {!payeeCity}
+            </div>
+            <div class="field">
+                <small>Organisationsnummer (10 siffror)*</small>
+                {!payeeBusinessRegistrationNumber}
+            </div>
+            <div class="field">
+                <small>Bankgironummer</small>
+                {!payeeBankAccount}
+            </div>
+            <p>* Markerade uppgifter är obligatoriska</p>
+        </div>
+        <div class="right">
+            <h1>Betalare</h1>
+            <div class="field">
+                <small>Namn*</small>
+                {!payerName}
+            </div>
+            <div class="field">
+                <small>Person-/organisationsnummer (10 siffror)*</small>
+                {!payerSsn}
+            </div>
+            <div class="field">
+                <small>Betaltjänstleverantör (bank)*</small>
+                {!payerBankName}
+            </div>
+            <div class="field">
+                <small>Konto (Clearingnummer+kontonummer)*</small>
+                {!payerBranchCode} {!payerBankAccount}
+            </div>
+            <div class="field">
+                <small>Betalar-/kundnummer*</small>
+                {!payerNumber}
+            </div>
+        </div>
+        </section>
+        <div class="clearfix"></div>
+        <section>
+        <div class="left">
+            <h1>Medgivande till betalning via Autogiro</h1>
+            <p>
+                Undertecknad (”betalaren”), medger att
+                betalning får göras genom uttag från angivet
+                konto, på begäran av angiven
+                betalningsmottagare för betalning till denne på
+                viss dag (”förfallodagen”) via Autogiro.
+            </p>
+        </div>
+    
+        <div class="right">
+            <div class="field">
+                <small>Ort och datum*</small>
+                {!signDate}
+            </div>
+            <div class="field signature">
+                <small>Betalarens underskrift*</small>
+                <code>
+                    digitalt signerad av: <br/>
+                    {!payerName}<br />
+                    {!payerSsn}<br />
+                    {!payerIpaddress}
+                    {!payerSignatureHash}
+                </code>
+            </div>
+        </div>
+        </section>
+    <div class="clearfix"></div>
+    <section>
+    <p>
+        Undertecknad (”betalaren”), medger att betalning får göras genom uttag från angivet konto eller av 
+        betalaren senare angivet konto, på begäran av angiven betalningsmottagare för betalning till denne 
+        på viss dag (”förfallodagen”) via Autogiro. Betalaren samtycker till att behandling av personuppgifter 
+        som lämnats i detta medgivande behandlas av betalarens betaltjänstleverantör, betalningsmottagaren, 
+        betalningsmottagarens betaltjänstleverantör och Bankgirocentralen BGC AB för administration av tjänsten. 
+        Personuppgiftsansvariga för denna personuppgiftsbehandling är betalarens betaltjänstleverantör, 
+        betalningsmottagaren samt betalningsmottagarens betaltjänstleverantör. Betalaren kan när som helst 
+        begära att få tillgång till eller rättelse av personuppgifterna genom att kontakta betalarens 
+        betaltjänstleverantör. Ytterligare information om behandling av personuppgifter i samband med 
+        betalningar kan finnas i villkoren för kontot och i avtalet med betalningsmottagaren. 
+        Betalaren kan när som helst återkalla sitt samtycke, vilket medför att tjänsten i sin helhet avslutas.
+    </p>
+    </section>
+    </div>
+    <div class="page">
+    <section class="text">
+        <h1>Beskrivning</h1>
+        <h2>Allmänt</h2>
+        <p>
+            Autogiro är en betaltjänst som innebär att betalningar utförs från betalarens konto på initiativ av 
+            betalningsmottagaren. För att betalaren ska kunna betala via Autogiro, ska betalaren lämna sitt 
+            medgivande till betalningsmottagaren om att denne får initiera betalningar från betalarens konto. 
+            Dessutom ska betalarens betaltjänstleverantör (t ex bank eller betalningsinstitut) godkänna att 
+            kontot kan användas för Autogiro och betalningsmottagaren ska godkänna betalaren som användare av Autogiro.
+            Betalarens betaltjänstleverantör är inte skyldig att pröva behörigheten av eller meddela betalaren i 
+            förväg om begärda uttag. Uttag belastas betalarens konto enligt de regler som gäller hos betalarens 
+            betaltjänstleverantör. Meddelande om uttag får betalaren från sin betaltjänstleverantör. 
+            Medgivandet kan på betalarens begäran överflyttas till annat konto hos betaltjänstleverantören eller 
+            till konto hos annan betaltjänstleverantör.
+        </p>
+        <h2>Definition av bankdag</h2>
+        <p>
+            Med bankdag avses alla dagar utom lördag, söndag, midsommarafton, julafton eller nyårsafton eller annan allmän 
+            helgdag.
+        </p>
+        <h2>Information om betalning</h2>
+        <p>
+            Betalaren kommer av betalningsmottagaren att meddelas belopp, förfallodag och betalningssätt senast åtta bankdagar 
+            före förfallodagen. Detta kan meddelas inför varje enskild förfallodag eller vid ett tillfälle avseende flera 
+            framtida förfallodagar. Om meddelandet avser flera framtida förfallodagar ska meddelandet lämnas senast åtta 
+            bankdagar före den första förfallodagen. Detta gäller dock inte fall då betalaren godkänt uttaget i samband med 
+            köp eller beställning av vara eller tjänst. I sådant fall får betalaren meddelande av betalningsmottagaren om belopp, 
+            förfallodag och betalningssätt i samband med köpet och/eller beställningen. Genom undertecknandet av detta medgivande 
+            lämnar betalaren sitt samtycke till att betalningar som omfattas av betalningsmottagarens meddelande enligt denna 
+            punkt genomförs.
+        </p>
+        <h2>Täckning måste finnas på kontot</h2>
+        <p>
+            Betalaren ska se till att täckning finns på kontot senast kl. 00.01 på förfallodagen. Har betalaren inte täckning 
+            på kontot på förfallodagen kan det innebära att betalningar inte blir utförda. Om täckning saknas för betalning på 
+            förfallodagen får betalningsmottagaren göra ytterligare uttagsförsök under de kommande bankdagarna. Betalaren kan 
+            på begäran få information från betalningsmottagaren om antalet uttagsförsök.
+        </p>
+        <h2>Stoppa betalning (återkallelse av betalningsorder)</h2>
+        <p>
+            Betalaren får stoppa en betalning genom att kontakta antingen betalningsmottagaren senast två bankdagar före 
+            förfallodagen eller sin betaltjänstleverantör senast bankdagen före förfallodagen vid den tidpunkt som anges 
+            av betaltjänstleverantören
+        </p>
+        <p>
+            Om betalaren stoppar en betalning enligt ovan innebär det att den aktuella betalningen stoppas vid ett enskilt 
+            tillfälle. Om betalaren vill att samtliga framtida betalningar som initieras av betalningsmottagaren ska 
+            stoppas måste betalaren återkalla medgivandet.
+        </p>
+        <h2>Medgivandets giltighetstid, återkallelse</h2>
+        <p>
+            Medgivandet gäller tills vidare. Betalaren har rätt att när som helst återkalla medgivandet genom att kontakta 
+            betalningsmottagaren eller sin betaltjänstleverantör. Meddelandet om återkallelse av medgivandet ska för att 
+            stoppa ännu inte genomförda betalningar vara betalningsmottagaren tillhanda senast fem bankdagar före 
+            förfallodagen alternativt vara betalarens betaltjänstleverantör tillhanda senast bankdagen före förfallodagen 
+            vid den tidpunkt som anges av betaltjänstleverantören.
+        </p>
+        <h2>Rätten för betalningsmottagaren och betalarens betaltjänstleverantör att avsluta anslutningen till
+            Autogiro</h2>
+        <p>
+            Betalningsmottagaren har rätt att avsluta betalarens anslutning till Autogiro trettio dagar efter det att 
+            betalningsmottagaren underrättat betalaren härom. Betalningsmottagaren har dock rätt att omedelbart avsluta 
+            betalarens anslutning till Autogiro om betalaren vid upprepade tillfällen inte har haft tillräcklig kontobehållning 
+            på förfallodagen eller om det konto som medgivandet avser avslutas eller om betalningsmottagaren bedömer att 
+            betalaren av annan anledning inte bör delta i Autogiro.
+        </p>
+        <p>
+            Betalarens betaltjänstleverantör har rätt att avsluta betalarens anslutning till Autogiro i enlighet med de 
+            villkor som gäller mellan betalarens betaltjänstleverantör och betalaren.
+        </p>
+    </section>
+    </div>
+    <section class="example">
+        <p>
+            This section serves as an example of all variables that are accessible by default. Remove this section from your final document!
+        </p>
+        <ul>
+            <li>payeeName: {!payeeName}</li>
+            <li>payeeStreet: {!payeeStreet}</li>
+            <li>payeePostalCode: {!payeePostalCode}</li>
+            <li>payeeCity: {!payeeCity}</li>
+            <li>payeeBusinessRegistrationNumber: {!payeeBusinessRegistrationNumber}</li>
+            <li>payeeBankAccount: {!payeeBankAccount}</li>
+            <li>payerName: {!payerName}</li>
+            <li>payerSsn: {!payerSsn}</li>
+            <li>payerIpaddress: {!payerIpaddress}</li>
+            <li>payerCriiptoSub: {!payerSignatureHash}</li>
+            <li>payerBankName: {!payerBankName}</li>
+            <li>payerBranchCode: {!payerBranchCode}</li>
+            <li>payerBankAccount: {!payerBankAccount}</li>
+            <li>payerNumber: {!payerNumber}</li>
+            <li>signDate: {!signDate}</li>
+            <li>amount: {!amount}</li>
+            <li>frequency: {!frequency}</li>
+            <li>startDate: {!startDate}</li>
+            <li>someVariable: {!someVariable}</li>
+        </ul>
+    </section>
+    </body>
+    </html>
+</apex:page>
