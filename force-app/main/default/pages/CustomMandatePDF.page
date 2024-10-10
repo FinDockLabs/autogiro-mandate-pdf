@@ -299,7 +299,7 @@
             <li>payerName: {!payerName}</li>
             <li>payerSsn: {!payerSsn}</li>
             <li>payerIpaddress: {!payerIpaddress}</li>
-            <li>payerCriiptoSub: {!payerSignatureHash}</li>
+            <li>payerSignatureHash: {!payerSignatureHash}</li>
             <li>payerBankName: {!payerBankName}</li>
             <li>payerBranchCode: {!payerBranchCode}</li>
             <li>payerBankAccount: {!payerBankAccount}</li>
